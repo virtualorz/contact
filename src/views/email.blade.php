@@ -40,7 +40,7 @@
                 
                 <tr>
                     <td width="75%" align="left" bgcolor="#fbf6b8" style="padding:0 20px" background-color="#FBF6B8">
-                        <p>Hi we got contact from {{$data['name']}} :</p>
+                        <p>{{$data['text']}} {{$data['name']}} :</p>
                         <p>{{$data['message']}}</p>
                     </td>
                 </tr>

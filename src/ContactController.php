@@ -78,8 +78,14 @@ class Contact
                     'status' => 0,
                     'remark' => '',
                 ]);
+            $data = [
+                'title'=>'Contact from website',
+                'text'=>'Hi we got contact from :',
+                'name'=>Request::input('contact-name'),
+                'message'=>Request::input('contact-message')
+            ];
             Mail::send('Contact::email', [
-                    'data' => ['title'=>'Contact from website','name'=>Request::input('contact-name'),'message'=>Request::input('contact-message')],
+                    'data' => $data,
                         ], function ($m) {
                     $m->to(config('contact.admin_email'));
                     //$m->to('virtualorz@gmail.com');
@@ -159,10 +165,17 @@ class Contact
                 ->update([
                     'status' => 2
                 ]);
+
+            $data = [
+                'title'=>'Contact reply',
+                'text'=>'Hi we got contact replay for :',
+                'name'=>$dataRow->name,
+                'message'=>Request::input('contact_reply-content')
+            ];
             
             Mail::send('Contact::email', [
-                'data' => ['title'=>'Contact reply','name'=>$dataRow->name,'message'=>Request::input('contact_reply-content')],
-                    ], function ($m) {
+                'data' => $data,
+                    ], function ($m) use($dataRow) {
                 $m->to($dataRow->email);
                 $m->subject("Contact email notice");
             });
