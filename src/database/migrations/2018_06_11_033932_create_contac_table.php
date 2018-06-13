@@ -20,6 +20,7 @@ class CreateContacTable extends Migration
             $table->string('name', 12)->comment('姓名');
             $table->string('company', 24)->comment('公司');
             $table->string('tel', 10)->comment('電話');
+            $table->string('email', 386)->comment('email');
             $table->text('message')->comment('留言');
             $table->tinyInteger('status')->unsigned()->comment('狀態 0:未讀 1:已讀 2:已回');
             $table->text('remark')->comment('備註');

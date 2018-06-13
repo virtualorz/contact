@@ -1,4 +1,4 @@
 <?php
 return [
-    'admin_email' => 'virtualorz@gmail.com'
+    'admin_email' => 'admin@gmail.com'
 ];

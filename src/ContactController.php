@@ -27,6 +27,7 @@ class Contact
                 'contact.name',
                 'contact.company',
                 'contact.tel',
+                'contact.email',
                 'contact.status'
             ])
             ->whereNull('contact.delete')
@@ -53,6 +54,7 @@ class Contact
             'contact-name' => 'string|required|max:12',
             'contact-company' => 'string|required|max:24',
             'contact-tel' => 'string|required|max:10',
+            'contact-email' => 'string|required|max:384',
             'contact-message' => 'string|required',
         ]);
         if ($validator->fails()) {
@@ -71,6 +73,7 @@ class Contact
                     'name' => Request::input('contact-name'),
                     'company' => Request::input('contact-company'),
                     'tel' => Request::input('contact-tel'),
+                    'email' => Request::input('contact-email'),
                     'message' => Request::input('contact-message'),
                     'status' => 0,
                     'remark' => '',
@@ -78,8 +81,8 @@ class Contact
             Mail::send('Contact::email', [
                     'data' => ['title'=>'Contact from website','name'=>Request::input('contact-name'),'message'=>Request::input('contact-message')],
                         ], function ($m) {
-                    //$m->to(config('contact.admin_email'));
-                    $m->to('virtualorz@gmail.com');
+                    $m->to(config('contact.admin_email'));
+                    //$m->to('virtualorz@gmail.com');
                     $m->subject("Contact email notice");
             });
 
@@ -133,7 +136,14 @@ class Contact
 
         DB::beginTransaction();
         try {
-
+            $dataRow = DB::table('contact')
+                ->select([
+                    'contact.email',
+                    'contact.name'
+                ])
+                ->where('contact.id',Request::input('id'))
+                ->first();
+            
             DB::table('contact_reply')
                 ->insert([
                     'contact_id' => Request::input('id'),
@@ -149,6 +159,13 @@ class Contact
                 ->update([
                     'status' => 2
                 ]);
+            
+            Mail::send('Contact::email', [
+                'data' => ['title'=>'Contact reply','name'=>$dataRow->name,'message'=>Request::input('contact_reply-content')],
+                    ], function ($m) {
+                $m->to($dataRow->email);
+                $m->subject("Contact email notice");
+            });
 
             DB::commit();
 
@@ -184,6 +201,7 @@ class Contact
                     'contact.name',
                     'contact.company',
                     'contact.tel',
+                    'contact.email',
                     'contact.message',
                     'contact.status'
                 ])
